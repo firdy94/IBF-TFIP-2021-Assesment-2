@@ -21,6 +21,7 @@ import jakarta.json.Json;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
+import jakarta.json.JsonValue;
 
 @Service
 public class BookService {
@@ -80,13 +81,24 @@ public class BookService {
 			String coverUrl = String.format("https://covers.openlibrary.org/b/id/%s.jpg", coverId);
 			bookDetails.setCoverUrl(coverUrl);
 			Optional<JsonArray> excerpts = Optional.ofNullable(data.getJsonArray("excerpts"));
+			Optional<JsonValue> descriptions = Optional.ofNullable(data.get("description"));
+
 			String excerpt = null;
+			String description = null;
 
 			if (!excerpts.isEmpty()) {
 				JsonArray nnExcerpts = excerpts.get();
 				excerpt = nnExcerpts.get(0).asJsonObject().getString("excerpt");
 			}
-			String description = data.getString("description", null);
+			if (!descriptions.isEmpty()) {
+				if (descriptions.get().getValueType().equals(JsonObject.EMPTY_JSON_OBJECT.getValueType())) {
+					description = data.getJsonObject("description").getString("value");
+
+				} else {
+					description = data.getString("description");
+
+				}
+			}
 			bookDetails.setExcerpt(excerpt);
 			bookDetails.setDescription(description);
 
