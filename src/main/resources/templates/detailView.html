@@ -12,17 +12,17 @@
 <body>
     <div class="container d-flex flex-row">
         <div>
-            <img data-th-src="${myBook.coverUrl}" />
+            <img data-th-src="${myBook.coverUrl}" height="500px" />
         </div>
         <div>
-            <p>Title: <span th:text="${myBook.title} ?: 'UNKNOWN' "> </span></p>
+            <p>Title: <span th:text="${myBook.title} ?: 'UNKNOWN'"> </span></p>
             <p>
                 Description:
-                <span th:text="${myBook.description} ?: 'UNKNOWN' "> </span>
+                <span th:text="${myBook.description} ?: 'UNKNOWN'"> </span>
             </p>
-            <p>Excerpt: <span th:text="${myBook.excerpt} ?: 'UNKNOWN' "> </span></p>
-            <p>Cached: <span th:text="${myBook.cache} ?: 'UNKNOWN' "> </span></p>
-            <button type="button " class="btn btn-outline-primary" onClick="parent.location='/' ">
+            <p>Excerpt: <span th:text="${myBook.excerpt} ?: 'UNKNOWN'"> </span></p>
+            <p>Cached: <span th:text="${myBook.cache} ?: 'UNKNOWN'"> </span></p>
+            <button type="button" class="btn btn-outline-primary" onClick="parent.location='/'">
           Back
         </button>
         </div>
