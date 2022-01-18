@@ -9,7 +9,9 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import com.ibftfip2021.ssfassesment.model.Book;
+import com.ibftfip2021.ssfassesment.repository.BookRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,9 @@ import jakarta.json.JsonValue;
 
 @Service
 public class BookService {
+
+	@Autowired
+	BookRepository bookRepo;
 
 	private static final Logger logger = Logger.getLogger(BookService.class.getName());
 
@@ -53,7 +58,6 @@ public class BookService {
 			JsonReader reader = Json.createReader(is);
 			JsonObject data = reader.readObject();
 			searchedBooks = Book.createBook(data);
-			// Weather currentWeather = Weather.createWeather(data);
 			return searchedBooks;
 		}
 	}
@@ -65,6 +69,15 @@ public class BookService {
 
 	public Book getBook(String key) throws IOException {
 		Book bookDetails = new Book();
+
+		if (!bookRepo.getBook(key).isEmpty()) {
+			bookDetails = bookRepo.getBook(key).get();
+			bookDetails.setCache(true);
+			logger.info(String.valueOf(bookDetails.getCache()));
+			logger.info("Cache hit");
+
+			return bookDetails;
+		}
 		String baseUrl = "http://openlibrary.org/works/";
 		String url = String.format("%s%s.json", baseUrl, key);
 		logger.info(url);
@@ -77,15 +90,14 @@ public class BookService {
 			JsonReader reader = Json.createReader(is);
 			JsonObject data = reader.readObject();
 			bookDetails.setTitle(data.getString("title"));
+			bookDetails.setCache(false);
 			String coverId = String.valueOf(data.getJsonArray("covers").getJsonNumber(0));
 			String coverUrl = String.format("https://covers.openlibrary.org/b/id/%s.jpg", coverId);
 			bookDetails.setCoverUrl(coverUrl);
 			Optional<JsonArray> excerpts = Optional.ofNullable(data.getJsonArray("excerpts"));
 			Optional<JsonValue> descriptions = Optional.ofNullable(data.get("description"));
-
 			String excerpt = null;
 			String description = null;
-
 			if (!excerpts.isEmpty()) {
 				JsonArray nnExcerpts = excerpts.get();
 				excerpt = nnExcerpts.get(0).asJsonObject().getString("excerpt");
@@ -93,19 +105,16 @@ public class BookService {
 			if (!descriptions.isEmpty()) {
 				if (descriptions.get().getValueType().equals(JsonObject.EMPTY_JSON_OBJECT.getValueType())) {
 					description = data.getJsonObject("description").getString("value");
-
 				} else {
 					description = data.getString("description");
-
 				}
 			}
 			bookDetails.setExcerpt(excerpt);
 			bookDetails.setDescription(description);
-
+			bookRepo.save(key, bookDetails);
 		} catch (RestClientException e) {
 			logger.info(e.getMessage());
 		}
-
 		return bookDetails;
 	}
 

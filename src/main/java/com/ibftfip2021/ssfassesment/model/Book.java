@@ -1,29 +1,33 @@
 package com.ibftfip2021.ssfassesment.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 
-public class Book {
+public class Book implements Serializable {
 	private String key;
 	private String title;
 	private String isbn;
 	private String coverUrl;
 	private String description;
 	private String excerpt;
+	private Boolean cache;
 
 	public Book() {
 	}
 
-	public Book(String key, String title, String isbn, String coverUrl, String description, String excerpt) {
+	public Book(String key, String title, String isbn, String coverUrl, String description, String excerpt,
+			Boolean cache) {
 		this.key = key;
 		this.title = title;
 		this.isbn = isbn;
 		this.coverUrl = coverUrl;
 		this.description = description;
 		this.excerpt = excerpt;
+		this.cache = cache;
 	}
 
 	public String getKey() {
@@ -72,6 +76,18 @@ public class Book {
 
 	public void setExcerpt(String excerpt) {
 		this.excerpt = excerpt;
+	}
+
+	public Boolean isCache() {
+		return this.cache;
+	}
+
+	public Boolean getCache() {
+		return this.cache;
+	}
+
+	public void setCache(Boolean cache) {
+		this.cache = cache;
 	}
 
 	public static List<Book> createBook(JsonObject data) {
