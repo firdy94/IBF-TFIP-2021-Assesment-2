@@ -10,14 +10,23 @@
 </head>
 
 <body>
-    <img data-th-src="${myBook.coverUrl}" />
-    <p th:text="${myBook.title} ?: 'UNKNOWN'"></p>
-    <p th:text="${myBook.description} ?: 'UNKNOWN'"></p>
-    <p th:text="${myBook.excerpt} ?: 'UNKNOWN'"></p>
-    <p th:text="${myBook.cache} ?: 'UNKNOWN'"></p>
-    <button type="button" class="btn btn-outline-primary" onClick="parent.location='/'">
-      Back
-    </button>
+    <div class="container d-flex flex-row">
+        <div>
+            <img data-th-src="${myBook.coverUrl}" height="200px" />
+        </div>
+        <div>
+            <p>Title: <span th:text="${myBook.title} ?: 'UNKNOWN'"> </span></p>
+            <p>
+                Description:
+                <span th:text="${myBook.description} ?: 'UNKNOWN'"> </span>
+            </p>
+            <p>Excerpt: <span th:text="${myBook.excerpt} ?: 'UNKNOWN'"> </span></p>
+            <p>Cached: <span th:text="${myBook.cache} ?: 'UNKNOWN'"> </span></p>
+            <button type="button" class="btn btn-outline-primary" onClick="parent.location='/'">
+          Back
+        </button>
+        </div>
+    </div>
 </body>
 
 </html>

@@ -91,9 +91,17 @@ public class BookService {
 			JsonObject data = reader.readObject();
 			bookDetails.setTitle(data.getString("title"));
 			bookDetails.setCache(false);
-			String coverId = String.valueOf(data.getJsonArray("covers").getJsonNumber(0));
-			String coverUrl = String.format("https://covers.openlibrary.org/b/id/%s.jpg", coverId);
-			bookDetails.setCoverUrl(coverUrl);
+			if (data.containsKey("covers")) {
+				String coverId = String.valueOf(data.getJsonArray("covers").getJsonNumber(0));
+				String coverUrl = String.format("https://covers.openlibrary.org/b/id/%s.jpg", coverId);
+				bookDetails.setCoverUrl(coverUrl);
+
+			} else {
+				String coverUrl = "https://user-images.githubusercontent.com/24848110/33519396-7e56363c-d79d-11e7-969b-09782f5ccbab.png";
+				bookDetails.setCoverUrl(coverUrl);
+
+			}
+
 			Optional<JsonArray> excerpts = Optional.ofNullable(data.getJsonArray("excerpts"));
 			Optional<JsonValue> descriptions = Optional.ofNullable(data.get("description"));
 			String excerpt = null;
